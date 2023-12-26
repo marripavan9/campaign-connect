@@ -2,3 +2,7 @@
 ./target
 /.idea/
 /target/
+/.mvn/
+./.mvn
+campaign.iml
+
