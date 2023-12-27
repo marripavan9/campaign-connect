@@ -30,9 +30,7 @@ public class EmailStatisticsService {
             statistics.setSuccessfulCount(campaignRun.getSuccessCount());
             emailStatistics.addEntry(statistics);
         }
-
         return emailStatistics;
-
     }
 
 }

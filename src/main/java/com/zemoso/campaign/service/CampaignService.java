@@ -13,9 +13,6 @@ public class CampaignService {
     @Autowired
     private CampaignRepository campaignRepository;
 
-    @Autowired
-    private CampaignRunService campaignRunService;
-
     public Campaign createCampaign(Campaign campaign) {
         return campaignRepository.save(campaign);
     }
@@ -26,7 +23,7 @@ public class CampaignService {
                     if (updatedCampaign.getContent() != null) {
                         existingCampaign.setContent(updatedCampaign.getContent());
                     }
-                    if (updatedCampaign.getEmail_ids() != null) {
+                    if (updatedCampaign.getEmail_ids() != null && updatedCampaign.getEmail_ids().length>0) {
                         existingCampaign.setEmail_ids(updatedCampaign.getEmail_ids());
                     }
                     if (updatedCampaign.getStartTime() != null) {
@@ -58,13 +55,13 @@ public class CampaignService {
     }
 
 
-    public String performCampaignAction(Long campaignId, String action) {
+    public Campaign performCampaignAction(Long campaignId, String action) {
         return campaignRepository.findById(campaignId)
                 .map(existingCampaign -> {
                     if (action != null && !action.isEmpty()) {
                         existingCampaign.setState(action);
                     }
-                    return campaignRepository.save(existingCampaign).getState();
+                    return campaignRepository.save(existingCampaign);
                 })
                 .orElse(null);
     }
