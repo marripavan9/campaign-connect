@@ -1,13 +1,7 @@
-package com.zemoso.campaign.model;
+package com.zemoso.campaign.request;
 
 public class ActionRequest {
     private String state;
-
-    // Constructors, getters, and setters
-
-    public ActionRequest() {
-        // Default constructor for Jackson deserialization
-    }
 
     public ActionRequest(String state) {
         this.state = state;

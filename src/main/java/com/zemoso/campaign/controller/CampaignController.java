@@ -1,13 +1,12 @@
 package com.zemoso.campaign.controller;
 
 import com.zemoso.campaign.dto.CampaignActionResponse;
-import com.zemoso.campaign.model.ActionRequest;
+import com.zemoso.campaign.request.ActionRequest;
 import com.zemoso.campaign.model.Campaign;
 import com.zemoso.campaign.service.CampaignService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RestController
@@ -16,7 +15,6 @@ public class CampaignController {
 
     @Autowired
     private CampaignService campaignService;
-    private static final DateTimeFormatter ISO_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
     @PostMapping
     public Campaign createCampaign(@RequestBody Campaign campaign) {
@@ -43,11 +41,6 @@ public class CampaignController {
     @GetMapping("/activeCampaigns")
     public List<Campaign> getActiveCampaigns() {
         return campaignService.getActiveCampaigns();
-    }
-
-    @GetMapping
-    public List<Campaign> getCampaignsWithinTimeRange(@RequestParam String startTime, @RequestParam String endTime) {
-        return campaignService.getCampaignsWithinTimeRange(startTime, endTime);
     }
 
     @PostMapping("/{campaignId}/state")

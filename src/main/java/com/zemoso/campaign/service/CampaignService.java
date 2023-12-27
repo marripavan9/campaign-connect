@@ -17,20 +17,17 @@ public class CampaignService {
     private CampaignRunService campaignRunService;
 
     public Campaign createCampaign(Campaign campaign) {
-        // Implement logic to create a campaign and return the created campaign
-        // You may want to trigger email sending logic here
         return campaignRepository.save(campaign);
     }
 
     public Campaign editCampaign(Long campaignId, Campaign updatedCampaign) {
-        // Implement logic to edit a campaign and return the updated campaign
         return campaignRepository.findById(campaignId)
                 .map(existingCampaign -> {
                     if (updatedCampaign.getContent() != null) {
                         existingCampaign.setContent(updatedCampaign.getContent());
                     }
                     if (updatedCampaign.getEmail_ids() != null) {
-                       // existingCampaign.setEmail_ids(updatedCampaign.getEmailIdsArray());
+                        existingCampaign.setEmail_ids(updatedCampaign.getEmail_ids());
                     }
                     if (updatedCampaign.getStartTime() != null) {
                         existingCampaign.setStartTime(updatedCampaign.getStartTime());
@@ -49,7 +46,7 @@ public class CampaignService {
                     }
                     return campaignRepository.save(existingCampaign);
                 })
-                .orElse(null); // Handle campaign not found case
+                .orElse(null);
     }
 
     public List<Campaign> getCurrentActiveCampaigns(String startTime, String  endTime) {
@@ -60,10 +57,6 @@ public class CampaignService {
         return campaignRepository.findAllByStatus("ready");
     }
 
-    public List<Campaign> getCampaignsWithinTimeRange(String startTime, String endTime) {
-        // Implement logic to get campaigns within the specified time range
-        return null;
-    }
 
     public String performCampaignAction(Long campaignId, String action) {
         return campaignRepository.findById(campaignId)
@@ -73,6 +66,6 @@ public class CampaignService {
                     }
                     return campaignRepository.save(existingCampaign).getState();
                 })
-                .orElse(null); // Handle campaign not found case
+                .orElse(null);
     }
 }
