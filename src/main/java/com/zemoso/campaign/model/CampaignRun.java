@@ -1,9 +1,6 @@
 package com.zemoso.campaign.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Entity
@@ -13,6 +10,23 @@ public class CampaignRun {
     private Long id;
 
     private Long campaignId;
+    @Column(name = "success_count")
+    private Integer successCount;
+
+    public void setSuccessCount(Integer successCount) {
+        this.successCount = successCount;
+    }
+
+    public Integer getFailureCount() {
+        return failureCount;
+    }
+
+    public void setFailureCount(Integer failureCount) {
+        this.failureCount = failureCount;
+    }
+
+    @Column(name = "failure_count")
+    private Integer failureCount;
 
     public Long getCampaignId() {
         return campaignId;
@@ -40,4 +54,8 @@ public class CampaignRun {
 
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
+
+    public Integer getSuccessCount() {
+        return successCount;
+    }
 }
