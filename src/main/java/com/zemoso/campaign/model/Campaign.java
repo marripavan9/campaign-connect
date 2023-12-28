@@ -5,6 +5,7 @@ import com.zemoso.campaign.enums.State;
 import com.zemoso.campaign.enums.Status;
 
 import javax.persistence.*;
+import java.time.ZonedDateTime;
 
 @Entity
 public class Campaign {
@@ -44,19 +45,19 @@ public class Campaign {
         this.content = content;
     }
 
-    public String getStartTime() {
+    public ZonedDateTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(String startTime) {
+    public void setStartTime(ZonedDateTime startTime) {
         this.startTime = startTime;
     }
 
-    public String getEndTime() {
+    public ZonedDateTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(String endTime) {
+    public void setEndTime(ZonedDateTime endTime) {
         this.endTime = endTime;
     }
 
@@ -84,8 +85,8 @@ public class Campaign {
     }
 
     @Column(name = "start_date")
-    private String startTime;
+    private ZonedDateTime startTime;
     @Column(name = "end_date")
-    private String endTime;
+    private ZonedDateTime endTime;
     private Integer frequency;
 }

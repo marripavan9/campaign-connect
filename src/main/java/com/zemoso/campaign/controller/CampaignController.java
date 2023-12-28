@@ -11,8 +11,10 @@ import com.zemoso.campaign.service.EmailStatisticsService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @RestController
@@ -62,8 +64,8 @@ public class CampaignController {
 
     @GetMapping("/active-campaigns")
     public ApiResponse<List<Campaign>> getCurrentActiveCampaigns(
-            @RequestParam("startTime") String startTime,
-            @RequestParam("endTime") String endTime) {
+            @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startTime,
+            @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endTime) {
         logger.info("Entered into getCurrentActiveCampaigns()");
         try {
             List<Campaign> activeCampaigns = campaignService.getCurrentActiveCampaigns(startTime, endTime);
@@ -102,7 +104,8 @@ public class CampaignController {
     }
 
     @GetMapping("/statistics")
-    public ApiResponse<EmailStatistics> getStatistics(@RequestParam String startTime, @RequestParam String endTime) {
+    public ApiResponse<EmailStatistics> getStatistics(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startTime,
+                                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endTime) {
         logger.info("Entered into getStatistics()");
         try {
             EmailStatistics statistics = emailStatisticsService.getStatistics(startTime, endTime);

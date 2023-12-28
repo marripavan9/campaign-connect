@@ -2,16 +2,17 @@ package com.zemoso.campaign.dto;
 
 public class ApiResponse<T> {
     private String status;
+    private String message;
     private T data;
 
     public String getStatus() {
         return status;
     }
 
-    public ApiResponse(String status, T data, String message) {
+    public ApiResponse(String status, String message, T data) {
         this.status = status;
-        this.data = data;
         this.message = message;
+        this.data = data;
     }
 
     public void setStatus(String status) {
@@ -34,13 +35,11 @@ public class ApiResponse<T> {
         this.message = message;
     }
 
-    private String message;
-
     public static <T> ApiResponse<T> success(T data, String message) {
-        return new ApiResponse<>("success", data, message);
+        return new ApiResponse<>("success", message, data);
     }
 
     public static <T> ApiResponse<T> failure(String message) {
-        return new ApiResponse<>("failure", null, message);
+        return new ApiResponse<>("failure", message, null);
     }
 }

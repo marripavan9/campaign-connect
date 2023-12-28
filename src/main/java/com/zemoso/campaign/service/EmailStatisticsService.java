@@ -17,9 +17,8 @@ public class EmailStatisticsService {
     @Autowired
     CampaignRunRepository campaignRunRepository;
 
-    public EmailStatistics getStatistics(String startTime, String endTime) {
-        List<CampaignRun> campaignRuns = campaignRunRepository.findFirstByStartTimeAfterAndEndTimeBeforeOrderByEndTimeDesc(ZonedDateTime.parse(startTime),
-                ZonedDateTime.parse(endTime));
+    public EmailStatistics getStatistics(ZonedDateTime startTime, ZonedDateTime endTime) {
+        List<CampaignRun> campaignRuns = campaignRunRepository.findFirstByStartTimeAfterAndEndTimeBeforeOrderByEndTimeDesc(startTime, endTime);
 
         EmailStatistics emailStatistics = new EmailStatistics();
 

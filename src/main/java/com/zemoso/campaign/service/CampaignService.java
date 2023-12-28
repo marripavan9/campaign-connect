@@ -7,6 +7,7 @@ import com.zemoso.campaign.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
 import java.util.List;
 
 @Service
@@ -48,7 +49,7 @@ public class CampaignService {
                 .orElse(null);
     }
 
-    public List<Campaign> getCurrentActiveCampaigns(String startTime, String  endTime) {
+    public List<Campaign> getCurrentActiveCampaigns(ZonedDateTime startTime, ZonedDateTime  endTime) {
         return campaignRepository.findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(startTime, endTime);
     }
 
