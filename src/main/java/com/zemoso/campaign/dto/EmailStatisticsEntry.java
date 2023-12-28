@@ -1,18 +1,22 @@
 package com.zemoso.campaign.dto;
 
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.time.LocalDate;
+import java.time.ZonedDateTime;
 
 public class EmailStatisticsEntry {
-    private Date date;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate date;
     private long successfulCount;
     private long failedCount;
 
-    public Date getDate() {
+    public LocalDate getDate() {
         return date;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setDate(ZonedDateTime dateTime) {
+        this.date = dateTime.toLocalDate();
     }
 
     public long getSuccessfulCount() {

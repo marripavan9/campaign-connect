@@ -24,7 +24,7 @@ public class EmailStatisticsService {
 
         for (CampaignRun campaignRun : campaignRuns) {
             EmailStatisticsEntry statistics = new EmailStatisticsEntry();
-            statistics.setDate(Date.from(campaignRun.getEndTime().toInstant()));
+            statistics.setDate(campaignRun.getEndTime());
             statistics.setFailedCount(campaignRun.getFailureCount());
             statistics.setSuccessfulCount(campaignRun.getSuccessCount());
             emailStatistics.addEntry(statistics);
