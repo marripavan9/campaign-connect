@@ -1,5 +1,7 @@
 package com.zemoso.campaign.service;
 
+import com.zemoso.campaign.enums.State;
+import com.zemoso.campaign.enums.Status;
 import com.zemoso.campaign.model.Campaign;
 import com.zemoso.campaign.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,14 +53,14 @@ public class CampaignService {
     }
 
     public List<Campaign> getActiveCampaigns() {
-        return campaignRepository.findAllByStatus("ready");
+        return campaignRepository.findAllByStatus(Status.SUCCESS);
     }
 
 
-    public Campaign performCampaignAction(Long campaignId, String action) {
+    public Campaign performCampaignAction(Long campaignId, State action) {
         return campaignRepository.findById(campaignId)
                 .map(existingCampaign -> {
-                    if (action != null && !action.isEmpty()) {
+                    if (action != null && action.getValue() != null) {
                         existingCampaign.setState(action);
                     }
                     return campaignRepository.save(existingCampaign);

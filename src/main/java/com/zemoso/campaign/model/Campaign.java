@@ -1,6 +1,8 @@
 package com.zemoso.campaign.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.zemoso.campaign.enums.State;
+import com.zemoso.campaign.enums.Status;
 
 import javax.persistence.*;
 
@@ -11,6 +13,28 @@ public class Campaign {
     private Long id;
 
     private String content;
+
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
+    }
+
+    @Enumerated(EnumType.STRING)
+    private State state;
 
     public String getContent() {
         return content;
@@ -39,17 +63,8 @@ public class Campaign {
     public Integer getFrequency() {
         return frequency;
     }
-
     public void setFrequency(Integer frequency) {
         this.frequency = frequency;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @Column
@@ -64,7 +79,6 @@ public class Campaign {
         this.email_ids = String.join(",", emailIds);
     }
 
-    // Convert the delimited string back to an array when retrieving from the database
     public String[] getEmail_ids() {
         return email_ids != null ? email_ids.split(",") : new String[0];
     }
@@ -74,15 +88,4 @@ public class Campaign {
     @Column(name = "end_date")
     private String endTime;
     private Integer frequency;
-    private String status;
-
-    public String getState() {
-        return state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
-    }
-
-    private String state;
 }

@@ -36,5 +36,4 @@ public class CampaignActionResponse {
         this.statusMessage = statusMessage;
     }
 
-    // getters and setters
 }

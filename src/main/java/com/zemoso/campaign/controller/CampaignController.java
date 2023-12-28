@@ -2,6 +2,8 @@ package com.zemoso.campaign.controller;
 
 import com.zemoso.campaign.dto.ApiResponse;
 import com.zemoso.campaign.dto.EmailStatistics;
+import com.zemoso.campaign.enums.State;
+import com.zemoso.campaign.enums.Status;
 import com.zemoso.campaign.model.Campaign;
 import com.zemoso.campaign.request.ActionRequest;
 import com.zemoso.campaign.service.CampaignService;
@@ -24,6 +26,8 @@ public class CampaignController {
     @PostMapping
     public ApiResponse<Campaign> createCampaign(@RequestBody Campaign campaign) {
         try {
+            campaign.setState(State.READY);
+            campaign.setStatus(Status.SUCCESS);
             Campaign createdCampaign = campaignService.createCampaign(campaign);
             return ApiResponse.success(createdCampaign, "Campaign created successfully");
         } catch (Exception e) {
