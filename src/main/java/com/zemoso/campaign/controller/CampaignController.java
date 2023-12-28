@@ -75,7 +75,7 @@ public class CampaignController {
         }
     }
 
-    @GetMapping("/active-campaigns")
+    @GetMapping("/activeCampaigns")
     public ApiResponse<List<Campaign>> getActiveCampaigns() {
         logger.info("Entered into getActiveCampaigns()");
         try {
