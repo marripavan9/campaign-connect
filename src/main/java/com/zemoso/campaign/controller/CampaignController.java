@@ -2,8 +2,8 @@ package com.zemoso.campaign.controller;
 
 import com.zemoso.campaign.dto.ApiResponse;
 import com.zemoso.campaign.dto.EmailStatistics;
+import com.zemoso.campaign.exception.NoActiveCampaignsException;
 import com.zemoso.campaign.model.Campaign;
-import com.zemoso.campaign.request.ActionRequest;
 import com.zemoso.campaign.service.CampaignService;
 import com.zemoso.campaign.service.EmailStatisticsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.persistence.EntityNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/api/campaigns")
@@ -46,40 +47,43 @@ public class CampaignController {
         }
     }
 
-    // todo renaming is required
-    @GetMapping("/active-campaigns") // todo not required
-    public ApiResponse<List<Campaign>> getCurrentActiveCampaigns(
-            @RequestParam("startTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startTime,
-            @RequestParam("endTime") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endTime) {
+    @GetMapping("")
+    public ApiResponse<List<Campaign>> getCurrentActiveCampaigns() {
         try {
-            List<Campaign> activeCampaigns = campaignService.getCurrentActiveCampaigns(startTime, endTime);
+            List<Campaign> activeCampaigns = campaignService.getCurrentActiveCampaigns();
             return ApiResponse.success(activeCampaigns, "Active campaigns retrieved successfully");
-        } catch (Exception e) {
+        } catch (NoActiveCampaignsException e) {
+            return ApiResponse.failure("No active campaigns found");
+        }  catch (Exception e) {
             return handleException(e, "Failed to retrieve active campaigns");
         }
     }
 
-    // todo getAllCampaigns - naming issue
-    @GetMapping("/activeCampaigns") // todo getAllCampaigns - current time and status
-    public ApiResponse<List<Campaign>> getActiveCampaigns() {
+    @GetMapping("/getAllCampaigns")
+    public ApiResponse<List<Campaign>> getAllCampaigns() {
         try {
             List<Campaign> activeCampaigns = campaignService.getActiveCampaigns();
-            return ApiResponse.success(activeCampaigns, "Active campaigns retrieved successfully");
+            return ApiResponse.success(activeCampaigns, "Campaigns retrieved successfully");
+        } catch (NoActiveCampaignsException e) {
+            return ApiResponse.failure("No campaigns found");
         } catch (Exception e) {
             return handleException(e, "Failed to retrieve active campaigns");
         }
     }
 
-    // campaigns/performAction/campaignId/state
-    // todo PUT
-    @PostMapping("/state") // todo naming change
-    // todo take campaignId and state as path variable
-    public ApiResponse<Campaign> performCampaignAction(@RequestBody ActionRequest actionRequest) {
+    @PutMapping("/{campaignId}/status/{status}")
+    public ApiResponse<Campaign> updateCampaignStatus(
+            @PathVariable Long campaignId,
+            @PathVariable String status) {
         try {
-            Campaign campaign = campaignService.performCampaignAction(actionRequest.getCampaignId(), actionRequest.getState());
-            return ApiResponse.success(campaign, "Campaign action performed successfully");
+            Campaign updatedCampaign = campaignService.updateCampaignStatus(campaignId, status);
+            return ApiResponse.success(updatedCampaign, "Campaign status updated successfully");
+        } catch (NoSuchElementException | EntityNotFoundException e) {
+            return ApiResponse.failure("Campaign not found with id: " + campaignId);
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.failure(e.getMessage());
         } catch (Exception e) {
-            return handleException(e, "Failed to perform campaign action");
+            return handleException(e, "Failed to update campaign status");
         }
     }
 

@@ -1,14 +1,15 @@
 package com.zemoso.campaign.service;
 
 import com.zemoso.campaign.enums.CampaignStatus;
+import com.zemoso.campaign.exception.NoActiveCampaignsException;
 import com.zemoso.campaign.model.Campaign;
 import com.zemoso.campaign.repository.CampaignRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalTime;
 import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 @Service
 public class CampaignService {
@@ -64,20 +65,45 @@ public class CampaignService {
         }
     }
 
-    public List<Campaign> getCurrentActiveCampaigns(ZonedDateTime startTime, ZonedDateTime  endTime) {
-        try {
-            return campaignRepository.findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(startTime, endTime);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get current active campaigns", e);
+    public List<Campaign> getCurrentActiveCampaigns() {
+        ZonedDateTime todayStart = ZonedDateTime.now().with(LocalTime.MIN);
+        ZonedDateTime tomorrowStart = ZonedDateTime.now().plusDays(1).with(LocalTime.MIN);
+        List<Campaign> campaignList = campaignRepository.findByStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndStatusIn(
+                todayStart, tomorrowStart, Arrays.asList(CampaignStatus.READY, CampaignStatus.RESUME));
+        if (campaignList.isEmpty()) {
+            throw new NoActiveCampaignsException("No active campaigns exist.");
         }
+        return campaignList;
     }
 
     public List<Campaign> getActiveCampaigns() {
-        try {
-            return campaignRepository.findAllByStatus(CampaignStatus.READY);
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to get active campaigns", e);
+        List<Campaign> campaignList = campaignRepository.findAllByStatusIn(Arrays.asList(CampaignStatus.READY, CampaignStatus.RESUME));
+        if (campaignList.isEmpty()) {
+            throw new NoActiveCampaignsException("No active campaigns exist.");
+        }
+        return campaignList;
+    }
+
+    public Campaign updateCampaignStatus(Long campaignId, String status) {
+        return campaignRepository.findById(campaignId)
+                .map(existingCampaign -> {
+                    CampaignStatus newStatus = CampaignStatus.valueOf(status.toUpperCase());
+                    validateStatusTransition(existingCampaign.getStatus(), newStatus);
+                    existingCampaign.setStatus(newStatus);
+                    return campaignRepository.save(existingCampaign);
+                })
+                .orElseThrow(() -> new NoSuchElementException("No campaign found with id: " + campaignId));
+    }
+
+    private void validateStatusTransition(CampaignStatus currentStatus, CampaignStatus newStatus) {
+        Map<CampaignStatus, Set<CampaignStatus>> allowedTransitions = new HashMap<>();
+        allowedTransitions.put(CampaignStatus.READY, new HashSet<>(Arrays.asList(CampaignStatus.PAUSE, CampaignStatus.STOP)));
+        allowedTransitions.put(CampaignStatus.PAUSE, new HashSet<>(Arrays.asList(CampaignStatus.RESUME, CampaignStatus.STOP)));
+        allowedTransitions.put(CampaignStatus.RESUME, new HashSet<>(Arrays.asList(CampaignStatus.PAUSE)));
+        if (!allowedTransitions.getOrDefault(currentStatus, Collections.emptySet()).contains(newStatus)) {
+            throw new IllegalArgumentException("Invalid status transition from " + currentStatus + " to " + newStatus);
         }
     }
+
 
 }

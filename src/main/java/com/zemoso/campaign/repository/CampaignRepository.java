@@ -8,6 +8,6 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface CampaignRepository extends JpaRepository<Campaign, Long> {
-    List<Campaign> findByStartTimeGreaterThanEqualAndEndTimeLessThanEqual(ZonedDateTime startTime, ZonedDateTime endTime);
-    List<Campaign> findAllByStatus(CampaignStatus campaignRunStatus);
+    List<Campaign> findByStartTimeLessThanEqualAndEndTimeGreaterThanEqualAndStatusIn(ZonedDateTime todayStart, ZonedDateTime tomorrowStart, List<CampaignStatus> asList);
+    List<Campaign> findAllByStatusIn(List<CampaignStatus> asList);
 }
