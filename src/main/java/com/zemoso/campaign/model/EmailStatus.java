@@ -2,10 +2,7 @@ package com.zemoso.campaign.model;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Data
@@ -18,6 +15,8 @@ public class EmailStatus {
     private Long id;
 
     private Long campaignRunId;
+    @Column(name = "email_address")
     private String emailId;
+    private Integer retryCount;
     private String status;
 }

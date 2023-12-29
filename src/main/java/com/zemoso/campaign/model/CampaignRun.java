@@ -1,5 +1,6 @@
 package com.zemoso.campaign.model;
 
+import com.zemoso.campaign.enums.CampaignRunStatus;
 import lombok.*;
 
 import javax.persistence.*;
@@ -25,4 +26,6 @@ public class CampaignRun {
 
     private ZonedDateTime startTime;
     private ZonedDateTime endTime;
+    @Enumerated(EnumType.STRING)
+    private CampaignRunStatus status;
 }

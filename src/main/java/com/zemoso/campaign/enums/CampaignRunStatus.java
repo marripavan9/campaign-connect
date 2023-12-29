@@ -1,14 +1,14 @@
 package com.zemoso.campaign.enums;
 
-public enum State {
-    READY("ready"),
-    RESUME("resume"),
-    PAUSE("pause"),
-    STOP("stop");
+public enum CampaignRunStatus {
+
+    SUCCESS("success"),
+    FAILURE("failure"),
+    RUNNING("running");
 
     private final String value;
 
-    State(String value) {
+    CampaignRunStatus(String value) {
         this.value = value;
     }
 

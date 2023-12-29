@@ -9,7 +9,7 @@ The Campaign Management System is a web application designed to manage email cam
 - Create new email campaigns with specified content, recipients, start time, end time, and frequency.
 - Edit existing campaigns to update content, recipients, start time, end time, and frequency.
 - Retrieve a list of currently active campaigns based on the provided time range.
-- Perform actions on campaigns, such as updating the state.
+- Perform actions on campaigns, such as updating the campaign status.
 - Retrieve campaign statistics, including successful and failed counts.
 
 ## Getting Started
@@ -87,14 +87,14 @@ Create a new email campaign by making a POST request to:
 
 #### Request
 
-- **URL:** `POST /api/campaigns/state`
+- **URL:** `POST /api/campaigns/perform-action`
 - **Headers:**
     - Content-Type: application/json
 - **Request Body:**
   ```json
   {
   "campaignId": 1,
-  "state": "PAUSED"
+  "status": "PAUSED"
   }
 
 ###  Get Campaign Statistics

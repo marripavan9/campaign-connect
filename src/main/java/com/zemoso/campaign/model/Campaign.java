@@ -1,9 +1,11 @@
 package com.zemoso.campaign.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.zemoso.campaign.enums.State;
-import com.zemoso.campaign.enums.Status;
-import lombok.*;
+import com.zemoso.campaign.enums.CampaignStatus;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
@@ -20,11 +22,11 @@ public class Campaign {
 
     private String content;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    @Column
+    private String email_ids;
 
     @Enumerated(EnumType.STRING)
-    private State state;
+    private CampaignStatus status;
 
     @Column(name = "start_date")
     private ZonedDateTime startTime;
@@ -33,9 +35,6 @@ public class Campaign {
     private ZonedDateTime endTime;
 
     private Integer frequency;
-
-    @Column
-    private String email_ids;
 
     @JsonIgnore
     public String getEmails() {

@@ -1,21 +1,21 @@
 package com.zemoso.campaign.request;
 
-import com.zemoso.campaign.enums.State;
+import com.zemoso.campaign.enums.CampaignStatus;
 
 public class ActionRequest {
-    public State getState() {
-        return state;
+    public CampaignStatus getState() {
+        return campaignStatus;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setState(CampaignStatus campaignStatus) {
+        this.campaignStatus = campaignStatus;
     }
 
-    private State state;
+    private CampaignStatus campaignStatus;
     private Long campaignId;
 
-    public ActionRequest(State state, Long campaignId) {
-        this.state = state;
+    public ActionRequest(CampaignStatus campaignStatus, Long campaignId) {
+        this.campaignStatus = campaignStatus;
         this.campaignId = campaignId;
     }
 
