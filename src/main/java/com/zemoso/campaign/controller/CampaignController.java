@@ -36,11 +36,6 @@ public class CampaignController {
         }
     }
 
-    @GetMapping("/test")
-    public ApiResponse<String> test() {
-        return ApiResponse.success("Hello World", "Test successful");
-    }
-
     @PutMapping("/{campaignId}")
     public ApiResponse<Campaign> editCampaign(@PathVariable Long campaignId, @RequestBody Campaign updatedCampaign) {
         try {
