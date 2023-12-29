@@ -66,36 +66,34 @@ Create a new email campaign by making a POST request to:
 
 #### Request
 
-- **URL:** `GET /api/campaigns/active-campaigns`
+- **URL:** `GET /api/campaigns`
 - **Headers:**
     - Content-Type: application/json
 - **Query Parameters:**
-    - `startTime`: Start time for filtering active campaigns (Format: "yyyy-MM-dd'T'HH:mm:ssXXX").
-    - `endTime`: End time for filtering active campaigns (Format: "yyyy-MM-dd'T'HH:mm:ssXXX").
+    - It will filter the campaigns based on dates and status.
 
 
 
-### Get Active Campaigns
+### Get All Campaigns
 
 #### Request
 
-- **URL:** `GET /api/campaigns/activeCampaigns`
+- **URL:** `GET /api/campaigns/getAllCampaigns`
 - **Headers:**
     - Content-Type: application/json
+
 
 ### Perform Campaign Action
 
 #### Request
 
-- **URL:** `POST /api/campaigns/perform-action`
+- **URL:** `PUT /api/campaigns/{campaignId}/status/{status}`
 - **Headers:**
     - Content-Type: application/json
-- **Request Body:**
-  ```json
-  {
-  "campaignId": 1,
-  "status": "PAUSED"
-  }
+- **Query Parameters:**
+    - `campaignId`: campaignId which you want to update.
+    - `status`: status of campaign which you want to update, possible values are READY, RESUME, PAUSE and STOP.
+
 
 ###  Get Campaign Statistics
 
