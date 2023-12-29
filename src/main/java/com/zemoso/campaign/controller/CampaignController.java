@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/api/campaigns")
 public class CampaignController {
 
-
     @Autowired
     private CampaignService campaignService;
 
@@ -27,24 +26,20 @@ public class CampaignController {
     @PostMapping
     public ApiResponse<Campaign> createCampaign(@RequestBody Campaign campaign) {
         try {
-            // state - status
-            // status -> campaign_run table
             Campaign createdCampaign = campaignService.createCampaign(campaign);
             return ApiResponse.success(createdCampaign, "Campaign created successfully");
         } catch (Exception e) {
-            return ApiResponse.failure("Failed to create campaign");
+            return handleException(e, "Failed to create campaign");
         }
     }
 
     @PutMapping("/{campaignId}")
     public ApiResponse<Campaign> editCampaign(@PathVariable Long campaignId, @RequestBody Campaign updatedCampaign) {
         try {
-            // todo null check
             Campaign editedCampaign = campaignService.editCampaign(campaignId, updatedCampaign);
             return ApiResponse.success(editedCampaign, "Campaign edited successfully");
         } catch (Exception e) {
-            // move the exceptions to service layer
-            return ApiResponse.failure("Failed to edit campaign");
+            return handleException(e, "Failed to edit campaign");
         }
     }
 
@@ -57,7 +52,7 @@ public class CampaignController {
             List<Campaign> activeCampaigns = campaignService.getCurrentActiveCampaigns(startTime, endTime);
             return ApiResponse.success(activeCampaigns, "Active campaigns retrieved successfully");
         } catch (Exception e) {
-            return ApiResponse.failure("Failed to retrieve active campaigns");
+            return handleException(e, "Failed to retrieve active campaigns");
         }
     }
 
@@ -68,7 +63,7 @@ public class CampaignController {
             List<Campaign> activeCampaigns = campaignService.getActiveCampaigns();
             return ApiResponse.success(activeCampaigns, "Active campaigns retrieved successfully");
         } catch (Exception e) {
-            return ApiResponse.failure("Failed to retrieve active campaigns");
+            return handleException(e, "Failed to retrieve active campaigns");
         }
     }
 
@@ -81,18 +76,23 @@ public class CampaignController {
             Campaign campaign = campaignService.performCampaignAction(actionRequest.getCampaignId(), actionRequest.getState());
             return ApiResponse.success(campaign, "Campaign action performed successfully");
         } catch (Exception e) {
-            return ApiResponse.failure("Failed to perform campaign action");
+            return handleException(e, "Failed to perform campaign action");
         }
     }
 
     @GetMapping("/statistics")
-    public ApiResponse<EmailStatistics> getStatistics(@RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startTime,
-                                                      @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endTime) {
+    public ApiResponse<EmailStatistics> getStatistics(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime startTime,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) ZonedDateTime endTime) {
         try {
             EmailStatistics statistics = emailStatisticsService.getStatistics(startTime, endTime);
             return ApiResponse.success(statistics, "Campaign statistics retrieved successfully");
         } catch (Exception e) {
-            return ApiResponse.failure("Failed to retrive the statistics");
+            return handleException(e, "Failed to retrieve the statistics");
         }
+    }
+
+    private <T> ApiResponse<T> handleException(Exception e, String errorMessage) {
+        return ApiResponse.failure(errorMessage);
     }
 }
