@@ -21,21 +21,27 @@ public class EmailStatisticsService {
     CampaignRunRepository campaignRunRepository;
 
     public EmailStatistics getStatistics(ZonedDateTime startTime, ZonedDateTime endTime) {
-        try {
-            if (startTime.isAfter(endTime)) {
-                throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
-            }
-            List<CampaignRun> campaignRuns = campaignRunRepository.findByStartTimeBeforeAndEndTimeAfterOrderByEndTimeDesc(endTime, startTime);
-            Map<LocalDate, EmailStatisticsEntry> aggregatedStatistics = new HashMap<>();
+        if (startTime.isAfter(endTime)) {
+            throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
+        }
 
-            for (CampaignRun campaignRun : campaignRuns) {
-                LocalDate date = campaignRun.getEndTime().toLocalDate();
-                EmailStatisticsEntry statistics = aggregatedStatistics.getOrDefault(date, new EmailStatisticsEntry());
-                statistics.setDate(campaignRun.getEndTime());
-                statistics.setFailedCount(statistics.getFailedCount() + campaignRun.getFailureCount());
-                statistics.setSuccessfulCount(statistics.getSuccessfulCount() + campaignRun.getSuccessCount());
-                aggregatedStatistics.put(date, statistics);
-            }
+        List<CampaignRun> campaignRuns = campaignRunRepository.findByStartTimeBeforeAndEndTimeAfterOrderByEndTimeDesc(endTime, startTime);
+        Map<LocalDate, EmailStatisticsEntry> aggregatedStatistics = new HashMap<>();
+
+        for (CampaignRun campaignRun : campaignRuns) {
+            LocalDate date = campaignRun.getEndTime().toLocalDate();
+            EmailStatisticsEntry statistics = aggregatedStatistics.getOrDefault(date, new EmailStatisticsEntry());
+            statistics.setDate(campaignRun.getEndTime());
+            statistics.setFailedCount(statistics.getFailedCount() + campaignRun.getFailureCount());
+            statistics.setSuccessfulCount(statistics.getSuccessfulCount() + campaignRun.getSuccessCount());
+            aggregatedStatistics.put(date, statistics);
+        }
+
+        if (aggregatedStatistics.isEmpty()) {
+            throw new IllegalArgumentException("No statistics available for the specified date range");
+        }
+
+        try {
             EmailStatistics emailStatistics = new EmailStatistics();
             emailStatistics.setEntries(new ArrayList<>(aggregatedStatistics.values()));
             return emailStatistics;
@@ -43,6 +49,4 @@ public class EmailStatisticsService {
             throw new RuntimeException("Failed to get statistics", e);
         }
     }
-
-
 }
