@@ -17,12 +17,16 @@ public class CampaignService {
     private CampaignRepository campaignRepository;
 
     public Campaign createCampaign(Campaign campaign) {
+        campaign.setState(State.READY);
+        campaign.setStatus(Status.SUCCESS);
         return campaignRepository.save(campaign);
     }
 
     public Campaign editCampaign(Long campaignId, Campaign updatedCampaign) {
+        // todo make sure you adhere to PUT, need to update the empty values also
         return campaignRepository.findById(campaignId)
                 .map(existingCampaign -> {
+                    // todo need to decide what user can update in this request.
                     if (updatedCampaign.getContent() != null) {
                         existingCampaign.setContent(updatedCampaign.getContent());
                     }
@@ -46,7 +50,7 @@ public class CampaignService {
                     }
                     return campaignRepository.save(existingCampaign);
                 })
-                .orElse(null);
+                .orElse(null); //todo 400
     }
 
     public List<Campaign> getCurrentActiveCampaigns(ZonedDateTime startTime, ZonedDateTime  endTime) {
@@ -59,6 +63,7 @@ public class CampaignService {
 
 
     public Campaign performCampaignAction(Long campaignId, State action) {
+        // todo validate -> PAUSE -> READY is not allowed
         return campaignRepository.findById(campaignId)
                 .map(existingCampaign -> {
                     if (action != null && action.getValue() != null) {
@@ -66,6 +71,6 @@ public class CampaignService {
                     }
                     return campaignRepository.save(existingCampaign);
                 })
-                .orElse(null);
+                .orElse(null); // todo same applies here
     }
 }
