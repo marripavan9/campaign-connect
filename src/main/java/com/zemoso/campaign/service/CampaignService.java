@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class CampaignService {
@@ -24,33 +25,27 @@ public class CampaignService {
         }
     }
 
-    public Campaign editCampaign(Long campaignId, Campaign updatedCampaign) {
-        // todo make sure you adhere to PUT, need to update the empty values also
-        try {
-            return campaignRepository.findById(campaignId)
-                    .map(existingCampaign -> {
-                        // todo need to decide what user can update in this request.
-                        if (updatedCampaign.getContent() != null) {
-                            existingCampaign.setContent(updatedCampaign.getContent());
-                        }
-                        if (updatedCampaign.getEmail_ids() != null && updatedCampaign.getEmail_ids().length>0) {
-                            existingCampaign.setEmail_ids(updatedCampaign.getEmail_ids());
-                        }
-                        if (updatedCampaign.getStartTime() != null) {
-                            existingCampaign.setStartTime(updatedCampaign.getStartTime());
-                        }
-                        if (updatedCampaign.getEndTime() != null) {
-                            existingCampaign.setEndTime(updatedCampaign.getEndTime());
-                        }
-                        if (updatedCampaign.getFrequency() != null) {
-                            existingCampaign.setFrequency(updatedCampaign.getFrequency());
-                        }
-                        return campaignRepository.save(existingCampaign);
-                    })
-                    .orElse(null); //todo 400
-         }catch (Exception e) {
-            throw new RuntimeException("Failed to edit campaign", e);
-        }
+    public Campaign editCampaign(Long campaignId, Campaign updatedCampaign) throws NoSuchElementException {
+        return campaignRepository.findById(campaignId)
+                .map(existingCampaign -> {
+                    if (updatedCampaign.getContent() != null) {
+                        existingCampaign.setContent(updatedCampaign.getContent());
+                    }
+                    if (updatedCampaign.getEmail_ids() != null && updatedCampaign.getEmail_ids().length > 0) {
+                        existingCampaign.setEmail_ids(updatedCampaign.getEmail_ids());
+                    }
+                    if (updatedCampaign.getStartTime() != null) {
+                        existingCampaign.setStartTime(updatedCampaign.getStartTime());
+                    }
+                    if (updatedCampaign.getEndTime() != null) {
+                        existingCampaign.setEndTime(updatedCampaign.getEndTime());
+                    }
+                    if (updatedCampaign.getFrequency() != null) {
+                        existingCampaign.setFrequency(updatedCampaign.getFrequency());
+                    }
+                    return campaignRepository.save(existingCampaign);
+                })
+                .orElseThrow(() -> new NoSuchElementException("No campaign found with id: " + campaignId));
     }
 
     public Campaign performCampaignAction(Long campaignId, CampaignStatus action) {

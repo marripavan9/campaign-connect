@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 
+import javax.persistence.EntityNotFoundException;
 import java.time.ZonedDateTime;
 import java.util.List;
 
@@ -38,6 +39,8 @@ public class CampaignController {
         try {
             Campaign editedCampaign = campaignService.editCampaign(campaignId, updatedCampaign);
             return ApiResponse.success(editedCampaign, "Campaign edited successfully");
+        } catch (EntityNotFoundException e) {
+            return ApiResponse.failure("Campaign not found with id: " + campaignId);
         } catch (Exception e) {
             return handleException(e, "Failed to edit campaign");
         }
