@@ -7,5 +7,5 @@ import java.time.ZonedDateTime;
 import java.util.List;
 
 public interface CampaignRunRepository extends JpaRepository<CampaignRun, Long> {
-    List<CampaignRun> findFirstByStartTimeAfterAndEndTimeBeforeOrderByEndTimeDesc(ZonedDateTime startTime, ZonedDateTime endTime);
+    List<CampaignRun> findByStartTimeBeforeAndEndTimeAfterOrderByEndTimeDesc(ZonedDateTime startTime, ZonedDateTime endTime);
 }

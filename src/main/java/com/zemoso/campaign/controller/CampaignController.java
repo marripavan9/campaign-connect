@@ -94,6 +94,8 @@ public class CampaignController {
         try {
             EmailStatistics statistics = emailStatisticsService.getStatistics(startTime, endTime);
             return ApiResponse.success(statistics, "Campaign statistics retrieved successfully");
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.failure(e.getMessage());
         } catch (Exception e) {
             return handleException(e, "Failed to retrieve the statistics");
         }

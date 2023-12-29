@@ -7,8 +7,12 @@ import com.zemoso.campaign.repository.CampaignRunRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class EmailStatisticsService {
@@ -18,27 +22,27 @@ public class EmailStatisticsService {
 
     public EmailStatistics getStatistics(ZonedDateTime startTime, ZonedDateTime endTime) {
         try {
-            // todo validations startTime > endTime
-            List<CampaignRun> campaignRuns = campaignRunRepository.findFirstByStartTimeAfterAndEndTimeBeforeOrderByEndTimeDesc(startTime, endTime);
-
-            // todo need to handle this aggregation based on date
-            // 28-12-2023 start 12 pm end 12:15 pm success 5 fail 0 1
-            // 28-12-2023 start 12 pm end 12:15 pm success 5 fail 0 2
-            // 29-12-2023 start 12 pm end 12:15 pm success 5 fail 0 2
-            EmailStatistics emailStatistics = new EmailStatistics();
+            if (startTime.isAfter(endTime)) {
+                throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
+            }
+            List<CampaignRun> campaignRuns = campaignRunRepository.findByStartTimeBeforeAndEndTimeAfterOrderByEndTimeDesc(endTime, startTime);
+            Map<LocalDate, EmailStatisticsEntry> aggregatedStatistics = new HashMap<>();
 
             for (CampaignRun campaignRun : campaignRuns) {
-                EmailStatisticsEntry statistics = new EmailStatisticsEntry();
+                LocalDate date = campaignRun.getEndTime().toLocalDate();
+                EmailStatisticsEntry statistics = aggregatedStatistics.getOrDefault(date, new EmailStatisticsEntry());
                 statistics.setDate(campaignRun.getEndTime());
-                statistics.setFailedCount(campaignRun.getFailureCount());
-                statistics.setSuccessfulCount(campaignRun.getSuccessCount());
-                emailStatistics.addEntry(statistics);
+                statistics.setFailedCount(statistics.getFailedCount() + campaignRun.getFailureCount());
+                statistics.setSuccessfulCount(statistics.getSuccessfulCount() + campaignRun.getSuccessCount());
+                aggregatedStatistics.put(date, statistics);
             }
+            EmailStatistics emailStatistics = new EmailStatistics();
+            emailStatistics.setEntries(new ArrayList<>(aggregatedStatistics.values()));
             return emailStatistics;
         } catch (Exception e) {
-            // Log the exception if needed
             throw new RuntimeException("Failed to get statistics", e);
         }
     }
+
 
 }
