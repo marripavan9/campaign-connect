@@ -17,6 +17,5 @@ public class EmailStatus {
     private Long campaignRunId;
     @Column(name = "email_address")
     private String emailId;
-    private Integer retryCount;
     private String status;
 }
