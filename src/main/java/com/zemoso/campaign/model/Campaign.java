@@ -3,11 +3,16 @@ package com.zemoso.campaign.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zemoso.campaign.enums.State;
 import com.zemoso.campaign.enums.Status;
+import lombok.*;
 
 import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Campaign {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,55 +23,16 @@ public class Campaign {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public State getState() {
-        return state;
-    }
-
-    public void setState(State state) {
-        this.state = state;
-    }
-
     @Enumerated(EnumType.STRING)
     private State state;
 
-    public String getContent() {
-        return content;
-    }
+    @Column(name = "start_date")
+    private ZonedDateTime startTime;
 
-    public void setContent(String content) {
-        this.content = content;
-    }
+    @Column(name = "end_date")
+    private ZonedDateTime endTime;
 
-    public ZonedDateTime getStartTime() {
-        return startTime;
-    }
-
-    public void setStartTime(ZonedDateTime startTime) {
-        this.startTime = startTime;
-    }
-
-    public ZonedDateTime getEndTime() {
-        return endTime;
-    }
-
-    public void setEndTime(ZonedDateTime endTime) {
-        this.endTime = endTime;
-    }
-
-    public Integer getFrequency() {
-        return frequency;
-    }
-    public void setFrequency(Integer frequency) {
-        this.frequency = frequency;
-    }
+    private Integer frequency;
 
     @Column
     private String email_ids;
@@ -83,10 +49,4 @@ public class Campaign {
     public String[] getEmail_ids() {
         return email_ids != null ? email_ids.split(",") : new String[0];
     }
-
-    @Column(name = "start_date")
-    private ZonedDateTime startTime;
-    @Column(name = "end_date")
-    private ZonedDateTime endTime;
-    private Integer frequency;
 }
