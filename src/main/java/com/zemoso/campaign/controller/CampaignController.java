@@ -59,7 +59,7 @@ public class CampaignController {
         }
     }
 
-    @GetMapping("/getAllCampaigns")
+    @GetMapping("")
     public ApiResponse<List<Campaign>> getAllCampaigns() {
         try {
             List<Campaign> activeCampaigns = campaignService.getActiveCampaigns();
