@@ -48,26 +48,21 @@ public class CampaignController {
     }
 
     @GetMapping("")
-    public ApiResponse<List<Campaign>> getCurrentActiveCampaigns() {
+    public ApiResponse<List<Campaign>> getCampaigns(@RequestParam(name = "type", defaultValue = "all") String type) {
         try {
-            List<Campaign> activeCampaigns = campaignService.getCurrentActiveCampaigns();
-            return ApiResponse.success(activeCampaigns, "Active campaigns retrieved successfully");
-        } catch (NoActiveCampaignsException e) {
-            return ApiResponse.failure("No active campaigns found");
-        }  catch (Exception e) {
-            return handleException(e, "Failed to retrieve active campaigns");
-        }
-    }
+            List<Campaign> campaigns;
+            if ("active".equalsIgnoreCase(type)) {
+                campaigns = campaignService.getCurrentActiveCampaigns();
+                return ApiResponse.success(campaigns, "Active campaigns retrieved successfully");
+            } else {
+                campaigns = campaignService.getAllActiveCampaigns();
+                return ApiResponse.success(campaigns, "Campaigns retrieved successfully");
+            }
 
-    @GetMapping("")
-    public ApiResponse<List<Campaign>> getAllCampaigns() {
-        try {
-            List<Campaign> activeCampaigns = campaignService.getActiveCampaigns();
-            return ApiResponse.success(activeCampaigns, "Campaigns retrieved successfully");
         } catch (NoActiveCampaignsException e) {
             return ApiResponse.failure("No campaigns found");
         } catch (Exception e) {
-            return handleException(e, "Failed to retrieve active campaigns");
+            return handleException(e, "Failed to retrieve campaigns");
         }
     }
 

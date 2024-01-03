@@ -49,22 +49,6 @@ public class CampaignService {
                 .orElseThrow(() -> new NoSuchElementException("No campaign found with id: " + campaignId));
     }
 
-    public Campaign performCampaignAction(Long campaignId, CampaignStatus action) {
-        try {
-            // todo validate -> PAUSE -> READY is not allowed
-            return campaignRepository.findById(campaignId)
-                    .map(existingCampaign -> {
-                        if (action != null && action.getValue() != null) {
-                            existingCampaign.setStatus(action);
-                        }
-                        return campaignRepository.save(existingCampaign);
-                    })
-                    .orElse(null); // todo same applies here
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to perform campaign action", e);
-        }
-    }
-
     public List<Campaign> getCurrentActiveCampaigns() {
         ZonedDateTime todayStart = ZonedDateTime.now().with(LocalTime.MIN);
         ZonedDateTime tomorrowStart = ZonedDateTime.now().plusDays(1).with(LocalTime.MIN);
@@ -76,7 +60,7 @@ public class CampaignService {
         return campaignList;
     }
 
-    public List<Campaign> getActiveCampaigns() {
+    public List<Campaign> getAllActiveCampaigns() {
         List<Campaign> campaignList = campaignRepository.findAllByStatusIn(Arrays.asList(CampaignStatus.READY, CampaignStatus.RESUME));
         if (campaignList.isEmpty()) {
             throw new NoActiveCampaignsException("No active campaigns exist.");
