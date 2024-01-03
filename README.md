@@ -70,6 +70,7 @@ Create a new email campaign by making a POST request to:
 - **Headers:**
     - Content-Type: application/json
 - **Query Parameters:**
+    - `type` - you need to pass the field as **active**  
     - It will filter the campaigns based on dates and status.
 
 
