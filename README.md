@@ -78,7 +78,7 @@ Create a new email campaign by making a POST request to:
 
 #### Request
 
-- **URL:** `GET /api/campaigns/getAllCampaigns`
+- **URL:** `GET /api/campaigns`
 - **Headers:**
     - Content-Type: application/json
 
