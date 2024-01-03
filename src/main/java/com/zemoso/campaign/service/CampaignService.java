@@ -18,18 +18,42 @@ public class CampaignService {
     private CampaignRepository campaignRepository;
 
     public Campaign createCampaign(Campaign campaign) {
+        validateCampaignParams(campaign);
         try {
-            ZonedDateTime startTime = campaign.getStartTime();
-            ZonedDateTime endTime = campaign.getEndTime();
-            if (startTime.isAfter(endTime)) {
-                throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
-            }
             campaign.setStatus(CampaignStatus.READY);
             return campaignRepository.save(campaign);
         } catch (IllegalArgumentException e) {
             throw e;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create campaign", e);
+        }
+    }
+
+    private void validateCampaignParams(Campaign campaign) {
+        if (campaign.getContent() == null || campaign.getContent().isEmpty()) {
+            throw new IllegalArgumentException("Missing or empty 'content' parameter");
+        }
+
+        if (campaign.getEmail_ids() == null || campaign.getEmail_ids().length == 0) {
+            throw new IllegalArgumentException("Missing or empty 'email_ids' parameter");
+        }
+
+        if (campaign.getStartTime() == null) {
+            throw new IllegalArgumentException("Missing 'startTime' parameter");
+        }
+
+        if (campaign.getEndTime() == null) {
+            throw new IllegalArgumentException("Missing 'endTime' parameter");
+        }
+
+        if (campaign.getFrequency() == null) {
+            throw new IllegalArgumentException("Missing 'frequency' parameter");
+        }
+
+        ZonedDateTime startTime = campaign.getStartTime();
+        ZonedDateTime endTime = campaign.getEndTime();
+        if (startTime.isAfter(endTime)) {
+            throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
         }
     }
 
