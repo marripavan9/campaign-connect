@@ -19,14 +19,30 @@ public class CampaignService {
 
     public Campaign createCampaign(Campaign campaign) {
         try {
+            ZonedDateTime startTime = campaign.getStartTime();
+            ZonedDateTime endTime = campaign.getEndTime();
+            if (startTime.isAfter(endTime)) {
+                throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
+            }
             campaign.setStatus(CampaignStatus.READY);
             return campaignRepository.save(campaign);
+        } catch (IllegalArgumentException e) {
+            throw e;
         } catch (Exception e) {
             throw new RuntimeException("Failed to create campaign", e);
         }
     }
 
     public Campaign editCampaign(Long campaignId, Campaign updatedCampaign) throws NoSuchElementException {
+
+        if(updatedCampaign.getStartTime() != null && updatedCampaign.getEndTime() != null) {
+            ZonedDateTime startTime = updatedCampaign.getStartTime();
+            ZonedDateTime endTime = updatedCampaign.getEndTime();
+            if (startTime.isAfter(endTime)) {
+                throw new IllegalArgumentException("Invalid date range: startTime should be before endTime");
+            }
+        }
+
         return campaignRepository.findById(campaignId)
                 .map(existingCampaign -> {
                     if (updatedCampaign.getContent() != null) {

@@ -30,16 +30,20 @@ public class CampaignController {
         try {
             Campaign createdCampaign = campaignService.createCampaign(campaign);
             return ApiResponse.success(createdCampaign, "Campaign created successfully");
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.failure(e.getMessage());
         } catch (Exception e) {
             return handleException(e, "Failed to create campaign");
         }
     }
 
-    @PutMapping("/{campaignId}")
+    @PatchMapping("/{campaignId}")
     public ApiResponse<Campaign> editCampaign(@PathVariable Long campaignId, @RequestBody Campaign updatedCampaign) {
         try {
             Campaign editedCampaign = campaignService.editCampaign(campaignId, updatedCampaign);
             return ApiResponse.success(editedCampaign, "Campaign edited successfully");
+        } catch (IllegalArgumentException e) {
+            return ApiResponse.failure(e.getMessage());
         } catch (EntityNotFoundException e) {
             return ApiResponse.failure("Campaign not found with id: " + campaignId);
         } catch (Exception e) {
